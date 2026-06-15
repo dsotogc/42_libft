@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsoto-ga <dsoto-ga@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/11 18:56:07 by dsoto-ga          #+#    #+#             */
-/*   Updated: 2026/06/15 13:42:42 by dsoto-ga         ###   ########.fr       */
+/*   Created: 2026/06/15 17:10:44 by dsoto-ga          #+#    #+#             */
+/*   Updated: 2026/06/15 18:17:50 by dsoto-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putnbr_fd(int n, int fd)
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	char	c;
+	t_list	*new_lst;
+	t_list	*new_node;
 
-	if (n == -2147483648)
+	if (!lst || !f || !del)
+		return (NULL);
+	new_lst = NULL;
+	while (lst)
 	{
-		ft_putstr_fd("-2147483648", fd);
-		return ;
+		new_node = ft_lstnew(f(lst->content));
+		if (!new_node)
+		{
+			ft_lstclear(&new_lst, del);
+			return (NULL);
+		}
+		ft_lstadd_back(&new_lst, new_node);
+		lst = lst->next;
 	}
-	if (n < 0)
-	{
-		ft_putchar_fd('-', fd);
-		n = n * -1;
-	}
-	if (n >= 10)
-		ft_putnbr_fd(n / 10, fd);
-	c = (n % 10) + '0';
-	ft_putchar_fd(c, fd);
+	return (new_lst);
 }
